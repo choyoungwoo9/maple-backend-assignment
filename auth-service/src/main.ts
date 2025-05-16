@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AuthModule } from './auth.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AuthModule);
 	const config = new DocumentBuilder()
 		.setTitle('Auth Service')
 		.setDescription('Auth Service API')

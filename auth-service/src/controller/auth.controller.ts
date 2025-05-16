@@ -1,13 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AuthService } from '../service/auth.service';
 import { SignupUserRequestDto } from './dto/signup-user.request.dto';
 import { SignupUserResponseDto } from './dto/signup-user.response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
-export class AppController {
-	constructor(private readonly appService: AppService) {}
+export class AuthController {
+	constructor(private readonly authService: AuthService) {}
 
 	@Post('users/signup')
 	@ApiOperation({ summary: '회원가입' })
@@ -22,7 +22,7 @@ export class AppController {
 		@Body() dto: SignupUserRequestDto,
 	): Promise<SignupUserResponseDto> {
 		const { id, password } = dto;
-		const accessToken = await this.appService.signupUser(id, password);
+		const accessToken = await this.authService.signupUser(id, password);
 		const response: SignupUserResponseDto = {
 			accessToken: accessToken,
 		};
