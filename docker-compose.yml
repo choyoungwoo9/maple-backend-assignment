@@ -1,5 +1,5 @@
 services:
   auth-server:
     build:
-      context: ./auth-server
+      context: ./auth-server/server
       dockerfile: Dockerfile
