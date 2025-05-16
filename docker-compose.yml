@@ -3,3 +3,26 @@ services:
     build:
       context: ./auth-server/server
       dockerfile: Dockerfile
+  auth-mongo:
+    image: mongo:8.0.9
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - auth-mongo-data:/data/db
+  auth-mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL:  mongodb://root:example@auth-mongo:27017
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - auth-mongo
+
+volumes:
+  auth-mongo-data:
