@@ -12,12 +12,12 @@ export class AccountRepository {
 	) {}
 
 	async create(account: AccountDomain): Promise<AccountDomain> {
-		const documentData = new AccountSchemaInfo(
-			account.id,
-			account.exposedId,
-			account.password,
-			account.role,
-		);
+		const documentData = new AccountSchemaInfo({
+			id: account.id,
+			exposedId: account.exposedId,
+			password: account.password,
+			role: account.role,
+		});
 		const createdAccount = new this.accountModel(documentData);
 		const savedDocument = await createdAccount.save();
 		return this.accountDocumentToDomain(savedDocument);

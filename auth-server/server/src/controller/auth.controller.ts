@@ -22,7 +22,7 @@ export class AuthController {
 		@Body() dto: SignupUserRequestDto,
 	): Promise<SignupUserResponseDto> {
 		const { id, password } = dto;
-		const accessToken = await this.authService.signupUser(id, password);
+		const accessToken = await this.authService.signupUser({ id, password });
 		const response: SignupUserResponseDto = {
 			accessToken: accessToken,
 		};

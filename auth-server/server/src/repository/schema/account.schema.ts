@@ -6,7 +6,7 @@ export type AccountDocument = HydratedDocument<AccountSchemaInfo>;
 
 @Schema({ collection: 'accounts' })
 export class AccountSchemaInfo {
-	constructor(id: string, exposedId: string, password: string, role: Role) {
+	constructor({ id, exposedId, password, role }: { id: string; exposedId: string; password: string; role: Role }) {
 		this.id = id;
 		this.exposedId = exposedId;
 		this.password = password;

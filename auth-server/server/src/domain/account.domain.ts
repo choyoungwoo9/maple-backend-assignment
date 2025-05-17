@@ -30,7 +30,7 @@ export class AccountDomain {
 		this.role = role;
 	}
 
-	static create(id: string, password: string, role: Role) {
+	static create({id, password, role}:{id: string, password: string, role: Role}) {
 		const exposedId = uuidv4();
 		return new AccountDomain({ id, password, exposedId, role });
 	}
