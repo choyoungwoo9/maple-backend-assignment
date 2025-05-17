@@ -1,0 +1,34 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { AccountDocument, AccountSchemaInfo } from './schema/account.schema';
+import { AccountDomain } from 'src/domain/account.domain';
+
+@Injectable()
+export class AccountRepository {
+	constructor(
+		@InjectModel(AccountSchemaInfo.name)
+		private accountModel: Model<AccountSchemaInfo>,
+	) {}
+
+	async create(account: AccountDomain): Promise<AccountDomain> {
+		const documentData = new AccountSchemaInfo(
+			account.id,
+			account.exposedId,
+			account.password,
+			account.role,
+		);
+		const createdAccount = new this.accountModel(documentData);
+		const savedDocument = await createdAccount.save();
+		return this.accountDocumentToDomain(savedDocument);
+	}
+
+	private accountDocumentToDomain(document: AccountDocument): AccountDomain {
+		return new AccountDomain({
+			id: document.id,
+			password: document.password,
+			exposedId: document.exposedId,
+			role: document.role,
+		});
+	}
+}
