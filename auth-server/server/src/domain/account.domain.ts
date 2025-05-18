@@ -50,12 +50,12 @@ export class AccountDomain {
 		});
 	}
 
-	static async encryptPassword(password: string) {
+	private static async encryptPassword(password: string) {
 		const saltOrRounds = 10;
 		return bcrypt.hash(password, saltOrRounds);
 	}
 
-	async comparePassword(password: string, encryptedPassword: string) {
-		return bcrypt.compare(password, encryptedPassword);
+	async isCorrectPassword(password: string) {
+		return bcrypt.compare(password, this.password);
 	}
 }
