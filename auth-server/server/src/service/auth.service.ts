@@ -22,7 +22,7 @@ export class AuthService {
 			if (isExist) {
 				throw new AuthServiceIdDuplicatedException({});
 			}
-			const user = AccountDomain.create({
+			const user = await AccountDomain.create({
 				id,
 				password,
 				role: Role.User,

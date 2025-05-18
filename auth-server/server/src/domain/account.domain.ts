@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
+
 export enum Role {
 	User = 'USER',
 	Admin = 'ADMIN',
@@ -29,7 +31,7 @@ export class AccountDomain {
 		this.role = role;
 	}
 
-	static create({
+	static async create({
 		id,
 		password,
 		role,
@@ -39,6 +41,21 @@ export class AccountDomain {
 		role: Role;
 	}) {
 		const exposedId = uuidv4();
-		return new AccountDomain({ id, password, exposedId, role });
+		const encryptedPassword = await AccountDomain.encryptPassword(password);
+		return new AccountDomain({
+			id,
+			password: encryptedPassword,
+			exposedId,
+			role,
+		});
+	}
+
+	static async encryptPassword(password: string) {
+		const saltOrRounds = 10;
+		return bcrypt.hash(password, saltOrRounds);
+	}
+
+	async comparePassword(password: string, encryptedPassword: string) {
+		return bcrypt.compare(password, encryptedPassword);
 	}
 }
