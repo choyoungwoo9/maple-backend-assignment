@@ -16,7 +16,7 @@ export class AuthService {
 	}: {
 		id: string;
 		password: string;
-	}): Promise<string> {
+	}): Promise<void> {
 		try {
 			const isExist = await this.accountRepository.isExistById(id);
 			if (isExist) {
@@ -28,17 +28,11 @@ export class AuthService {
 				role: Role.User,
 			});
 			await this.accountRepository.create(user);
-			const accessToken = this.generateAccessToken(user);
-			return accessToken;
 		} catch (error) {
 			if (error instanceof AuthServiceException) {
 				throw error;
 			}
 			throw new AuthServiceUnexpectedException({ cause: error });
 		}
-	}
-
-	private generateAccessToken(account: AccountDomain): string {
-		return 'access token';
 	}
 }
