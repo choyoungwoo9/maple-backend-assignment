@@ -4,6 +4,7 @@ import { AccountRepository } from 'src/repository/account.repository';
 import {
 	AuthServiceException,
 	AuthServiceUnexpectedException,
+	AuthServiceIdDuplicatedException,
 } from './exception/auth.service.exception';
 
 @Injectable()
@@ -17,6 +18,10 @@ export class AuthService {
 		password: string;
 	}): Promise<string> {
 		try {
+			const isExist = await this.accountRepository.isExistById(id);
+			if (isExist) {
+				throw new AuthServiceIdDuplicatedException({});
+			}
 			const user = AccountDomain.create({
 				id,
 				password,

@@ -33,6 +33,15 @@ export class AccountRepository {
 		}
 	}
 
+	async isExistById(id: string): Promise<boolean> {
+		try {
+			const document = await this.accountModel.exists({ id });
+			return document !== null;
+		} catch (error) {
+			throw new AuthRepositoryUnexpectedException(error);
+		}
+	}
+
 	private accountDocumentToDomain(document: AccountDocument): AccountDomain {
 		return new AccountDomain({
 			id: document.id,

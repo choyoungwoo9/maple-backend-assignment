@@ -1,9 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, ConflictException } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { SignupUserRequestDto } from './dto/signup-user.request.dto';
 import { SignupUserResponseDto } from './dto/signup-user.response.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-
+import { AuthServiceIdDuplicatedException } from '../service/exception/auth.service.exception';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -22,10 +22,20 @@ export class AuthController {
 		@Body() dto: SignupUserRequestDto,
 	): Promise<SignupUserResponseDto> {
 		const { id, password } = dto;
-		const accessToken = await this.authService.signupUser({ id, password });
-		const response: SignupUserResponseDto = {
-			accessToken: accessToken,
-		};
-		return response;
+		try {
+			const accessToken = await this.authService.signupUser({
+				id,
+				password,
+			});
+			const response: SignupUserResponseDto = {
+				accessToken: accessToken,
+			};
+			return response;
+		} catch (error) {
+			if (error instanceof AuthServiceIdDuplicatedException) {
+				throw new ConflictException('id 중복');
+			}
+			throw new Error();
+		}
 	}
 }

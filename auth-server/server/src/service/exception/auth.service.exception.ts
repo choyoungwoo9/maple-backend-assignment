@@ -17,3 +17,15 @@ export class AuthServiceUnexpectedException extends AuthServiceException {
 		super({ message, cause });
 	}
 }
+
+export class AuthServiceIdDuplicatedException extends AuthServiceException {
+	constructor({
+		message = '이미 존재하는 아이디입니다.',
+		cause,
+	}: {
+		message?: string;
+		cause?: Error;
+	}) {
+		super({ message, cause });
+	}
+}
