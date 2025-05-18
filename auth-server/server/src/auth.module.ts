@@ -7,11 +7,13 @@ import {
 	AccountSchema,
 } from './repository/schema/account.schema';
 import { AccountRepository } from './repository/account.repository';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
 	imports: [
-		MongooseModule.forRoot('mongodb://root:example@localhost:27017', {
-			dbName: 'auth',
+		ConfigModule.forRoot(),
+		MongooseModule.forRoot(process.env.AUTH_MONGODB_URI, {
+			dbName: process.env.AUTH_MONGODB_DB_NAME,
 		}),
 		MongooseModule.forFeature([
 			{ name: AccountSchemaInfo.name, schema: AccountSchema },
