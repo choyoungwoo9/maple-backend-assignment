@@ -1,4 +1,14 @@
 services:
+  gateway-server:
+    build:
+      context: ./gateway-server/server
+      dockerfile: Dockerfile
+    environment:
+      AUTH_SERVER_URL: http://auth-server:${AUTH_SERVER_PORT}
+      GATEWAY_SERVER_PORT: ${GATEWAY_SERVER_PORT}
+      AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
+    ports:
+      - 3000:3000
   auth-server:
     build:
       context: ./auth-server/server
@@ -10,8 +20,6 @@ services:
       AUTH_SERVER_ROOT_ADMIN_ID: ${AUTH_SERVER_ROOT_ADMIN_ID}
       AUTH_SERVER_ROOT_ADMIN_PW: ${AUTH_SERVER_ROOT_ADMIN_PW}
       AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
-    ports:
-      - 3000:3000
   auth-mongo:
     image: mongo:8.0.9
     restart: always
