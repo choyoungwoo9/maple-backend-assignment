@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { AuthModule } from 'src/auth.module';
 import { Connection } from 'mongoose';
+import * as request from 'supertest';
+import { AuthService } from 'src/service/auth.service';
 
 export interface TestInfo {
 	app: INestApplication;
@@ -23,6 +25,7 @@ export const createTestingApp = async (): Promise<TestInfo> => {
 						AUTH_MONGODB_URI: dbURI,
 						AUTH_MONGODB_DB_NAME: 'auth',
 						AUTH_SERVER_PORT: 3000,
+						AUTH_SERVER_JWT_SECRET: 'test-secret-key',
 					}),
 				],
 			}),
@@ -47,4 +50,23 @@ export const closeTestingApp = async (testApp: TestInfo): Promise<void> => {
 export const cleanupDatabase = async (testApp: TestInfo): Promise<void> => {
 	const connection: Connection = testApp.app.get(getConnectionToken());
 	await connection.db.dropDatabase();
+};
+
+export const setupRootAdmin = async (
+	app: INestApplication,
+): Promise<string> => {
+	await app.get(AuthService).onApplicationBootstrap();
+
+	const rootId = process.env.AUTH_SERVER_ROOT_ADMIN_ID;
+	const rootPw = process.env.AUTH_SERVER_ROOT_ADMIN_PW;
+
+	const loginResponse = await request(app.getHttpServer())
+		.post('/auth/users/login')
+		.send({
+			id: rootId,
+			password: rootPw,
+		})
+		.expect(200);
+
+	return loginResponse.body.accessToken;
 };
