@@ -31,6 +31,12 @@ export class AccountRepository {
 		return document !== null;
 	}
 
+	async getAccountById(id: string): Promise<AccountDomain | null> {
+		const accountDocument = await this.accountModel.findOne({ id });
+		if (!accountDocument) return null;
+		return this.accountDocumentToDomain(accountDocument);
+	}
+
 	private accountDocumentToDomain(document: AccountDocument): AccountDomain {
 		return new AccountDomain({
 			id: document.id,

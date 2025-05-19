@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { SignupUserRequestDto } from './dto/signup-user.request.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { WrapWith } from 'src/common/decorator/wrap-with.decorator';
 import { AuthControllerExceptionWrapStrategy } from './exception/auth.controller.exception.wrap-strategy';
+import { LoginRequestDto } from './dto/login.request.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,5 +28,27 @@ export class AuthController {
 			password,
 		});
 		return;
+	}
+
+	@Post('users/login')
+	@HttpCode(200)
+	@ApiOperation({ summary: '로그인' })
+	@ApiResponse({
+		status: 200,
+		description: '로그인 성공',
+	})
+	@ApiResponse({ status: 400, description: '요청 Body 형식 오류' })
+	@ApiResponse({
+		status: 401,
+		description: '아이디 또는 비밀번호가 올바르지 않음',
+	})
+	async login(
+		@Body() dto: LoginRequestDto,
+	): Promise<{ accessToken: string }> {
+		const { id, password } = dto;
+		return await this.authService.login({
+			id,
+			password,
+		});
 	}
 }

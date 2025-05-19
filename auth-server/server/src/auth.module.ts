@@ -8,6 +8,7 @@ import {
 } from './repository/schema/account.schema';
 import { AccountRepository } from './repository/account.repository';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
 	imports: [
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
 		MongooseModule.forFeature([
 			{ name: AccountSchemaInfo.name, schema: AccountSchema },
 		]),
+		JwtModule.register({}),
 	],
 	controllers: [AuthController],
 	providers: [AuthService, AccountRepository],

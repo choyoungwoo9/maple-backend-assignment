@@ -29,3 +29,15 @@ export class AuthServiceIdDuplicatedException extends AuthServiceException {
 		super({ message, cause });
 	}
 }
+
+export class AuthServiceInvalidCredentialsException extends AuthServiceException {
+	constructor({
+		message = '아이디 또는 비밀번호가 올바르지 않습니다.',
+		cause,
+	}: {
+		message?: string;
+		cause?: Error;
+	}) {
+		super({ message, cause });
+	}
+}
