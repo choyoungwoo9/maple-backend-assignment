@@ -13,32 +13,38 @@ export class AccountDomain {
 	password: string;
 	exposedId: string;
 	role: Role;
+	createdBy?: string;
 
 	constructor({
 		id,
 		password,
 		exposedId,
 		role,
+		createdBy,
 	}: {
 		id: string;
 		password: string;
 		exposedId: string;
 		role: Role;
+		createdBy?: string;
 	}) {
 		this.id = id;
 		this.exposedId = exposedId;
 		this.password = password;
 		this.role = role;
+		this.createdBy = createdBy;
 	}
 
 	static async create({
 		id,
 		password,
 		role,
+		createdBy,
 	}: {
 		id: string;
 		password: string;
 		role: Role;
+		createdBy?: string;
 	}) {
 		const exposedId = uuidv4();
 		const encryptedPassword = await AccountDomain.encryptPassword(password);
@@ -47,6 +53,7 @@ export class AccountDomain {
 			password: encryptedPassword,
 			exposedId,
 			role,
+			createdBy,
 		});
 	}
 

@@ -33,6 +33,9 @@ export class AccountSchemaInfo {
 
 	@Prop({ type: String, required: true, enum: Role })
 	role: Role;
+
+	@Prop({ type: String, required: false })
+	createdBy?: string;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(AccountSchemaInfo);

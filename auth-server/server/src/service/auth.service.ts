@@ -4,6 +4,7 @@ import { AccountRepository } from 'src/repository/account.repository';
 import {
 	AuthServiceIdDuplicatedException,
 	AuthServiceInvalidCredentialsException,
+	AuthServiceUnauthorizedException,
 } from './exception/auth.service.exception';
 import { WrapWith } from 'src/common/decorator/wrap-with.decorator';
 import { AuthServiceExceptionWrapStrategy } from './exception/auth.service.exception.wrap-strategy';
@@ -70,6 +71,19 @@ export class AuthService implements OnApplicationBootstrap {
 		return accessToken;
 	}
 
+	async verifyToken(
+		token: string,
+	): Promise<{ exposedId: string; role: Role }> {
+		try {
+			return await this.jwtService.verifyAsync(token, {
+				secret: process.env.AUTH_SERVER_JWT_SECRET,
+				algorithms: ['HS256'],
+			});
+		} catch (error) {
+			throw new AuthServiceUnauthorizedException({});
+		}
+	}
+
 	async signupUser({
 		id,
 		password,
@@ -87,5 +101,34 @@ export class AuthService implements OnApplicationBootstrap {
 			role: Role.User,
 		});
 		await this.accountRepository.create(user);
+	}
+
+	async registerStaff({
+		id,
+		password,
+		role,
+		adminExposedId,
+	}: {
+		id: string;
+		password: string;
+		role: Role.Operator | Role.Auditor | Role.Admin;
+		adminExposedId: string;
+	}): Promise<void> {
+		const admin =
+			await this.accountRepository.getAccountByExposedId(adminExposedId);
+		if (!admin || admin.role !== Role.Admin) {
+			throw new AuthServiceUnauthorizedException({});
+		}
+
+		const exists = await this.accountRepository.isExistById(id);
+		if (exists) throw new AuthServiceIdDuplicatedException({});
+
+		const staff = await AccountDomain.create({
+			id,
+			password,
+			role,
+			createdBy: admin.id,
+		});
+		await this.accountRepository.create(staff);
 	}
 }

@@ -41,3 +41,15 @@ export class AuthServiceInvalidCredentialsException extends AuthServiceException
 		super({ message, cause });
 	}
 }
+
+export class AuthServiceUnauthorizedException extends AuthServiceException {
+	constructor({
+		message = '권한이 없습니다.',
+		cause,
+	}: {
+		message?: string;
+		cause?: Error;
+	}) {
+		super({ message, cause });
+	}
+}

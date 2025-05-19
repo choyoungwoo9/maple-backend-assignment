@@ -37,6 +37,14 @@ export class AccountRepository {
 		return this.accountDocumentToDomain(accountDocument);
 	}
 
+	async getAccountByExposedId(
+		exposedId: string,
+	): Promise<AccountDomain | null> {
+		const accountDocument = await this.accountModel.findOne({ exposedId });
+		if (!accountDocument) return null;
+		return this.accountDocumentToDomain(accountDocument);
+	}
+
 	private accountDocumentToDomain(document: AccountDocument): AccountDomain {
 		return new AccountDomain({
 			id: document.id,
