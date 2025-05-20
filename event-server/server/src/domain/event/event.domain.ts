@@ -15,6 +15,7 @@ export class EventDomain {
     public readonly status: EventStatus,
     public readonly conditionList: ConditionDomain[],
     public readonly rewardList: RewardDomain[],
+    public readonly creatorExposedId: string,
   ) {}
 
   static create(params: {
@@ -23,6 +24,7 @@ export class EventDomain {
     endAt: Date;
     conditions: ConditionDomain[];
     rewards: RewardDomain[];
+    creatorExposedId: string;
   }) {
     this.validateParams(params);
     const id = uuidv4();
@@ -34,6 +36,7 @@ export class EventDomain {
       EventStatus.INACTIVE,
       params.conditions,
       params.rewards,
+      params.creatorExposedId,
     );
   }
 

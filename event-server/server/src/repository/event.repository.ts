@@ -58,6 +58,7 @@ export class EventRepository {
       document.status as EventStatus,
       document.conditionList,
       document.rewardList,
+      document.creatorExposedId,
     );
   }
 }

@@ -7,6 +7,8 @@ import { EventSchema, EventSchemaInfo } from './repository/schema/event.schema';
 import { EventRepository } from './repository/event.repository';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventStatusScheduler } from './service/event-status.scheduler';
+import { AuthService } from './service/auth/auth.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -18,9 +20,12 @@ import { EventStatusScheduler } from './service/event-status.scheduler';
       { name: EventSchemaInfo.name, schema: EventSchema },
     ]),
     ScheduleModule.forRoot(),
+    JwtModule.register({
+      secret: process.env.AUTH_SERVER_JWT_SECRET,
+    }),
   ],
   controllers: [EventController],
-  providers: [EventService, EventRepository, EventStatusScheduler],
+  providers: [EventService, EventRepository, EventStatusScheduler, AuthService],
   exports: [EventRepository],
 })
 export class EventModule {}

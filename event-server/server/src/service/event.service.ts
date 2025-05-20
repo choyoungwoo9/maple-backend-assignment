@@ -4,11 +4,16 @@ import { RewardDomainFactory } from 'src/domain/reward/factory/reward.domain.fac
 import { ConditionDomainFactory } from 'src/domain/condition/factory/condition.domain.factory';
 import { EventDomain } from 'src/domain/event/event.domain';
 import { EventRepository } from 'src/repository/event.repository';
+import { Role } from './auth/role.enum';
+import { AuthPayload } from './auth/auth.service';
 
 @Injectable()
 export class EventService {
   constructor(private readonly eventRepository: EventRepository) {}
-  createEvent(dto: CreateEventRequestDto) {
+  createEvent(dto: CreateEventRequestDto, authPayload: AuthPayload) {
+    if (authPayload.role !== Role.Admin && authPayload.role !== Role.Operator) {
+      throw new Error('권한 없음');
+    }
     const conditions = dto.event.conditions.map((condition) =>
       ConditionDomainFactory.create(condition.type, condition.params),
     );
@@ -26,6 +31,7 @@ export class EventService {
       endAt: dto.event.endAt,
       conditions: conditions,
       rewards: rewards,
+      creatorExposedId: authPayload.exposedId,
     });
     return this.eventRepository.create(event);
   }

@@ -25,6 +25,9 @@ export class EventSchemaInfo {
 
   @Prop({ type: [{ type: Object }], required: true })
   rewardList: any[];
+
+  @Prop({ required: true })
+  creatorExposedId: string;
 }
 
 export const EventSchema = SchemaFactory.createForClass(EventSchemaInfo);
