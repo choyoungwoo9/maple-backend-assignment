@@ -26,6 +26,29 @@ export class EventRepository {
     return this.eventDocumentToDomain(savedDocument);
   }
 
+  async findInactiveAndOngoingEvents(
+    referenceTime: Date,
+  ): Promise<EventDomain[]> {
+    const docs = await this.eventModel.find({
+      status: 'INACTIVE',
+      startAt: { $lte: referenceTime },
+      endAt: { $gt: referenceTime },
+    });
+    return docs.map((doc) => this.eventDocumentToDomain(doc));
+  }
+
+  async findActiveAndEndedEvents(referenceTime: Date): Promise<EventDomain[]> {
+    const docs = await this.eventModel.find({
+      status: 'ACTIVE',
+      endAt: { $lte: referenceTime },
+    });
+    return docs.map((doc) => this.eventDocumentToDomain(doc));
+  }
+
+  async updateStatus(id: string, status: string): Promise<void> {
+    await this.eventModel.updateOne({ id }, { status });
+  }
+
   private eventDocumentToDomain(document: EventDocument): EventDomain {
     return new EventDomain(
       document.id,

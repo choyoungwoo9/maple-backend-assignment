@@ -5,6 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { EventSchema, EventSchemaInfo } from './repository/schema/event.schema';
 import { EventRepository } from './repository/event.repository';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventStatusScheduler } from './service/event-status.scheduler';
 
 @Module({
   imports: [
@@ -15,9 +17,10 @@ import { EventRepository } from './repository/event.repository';
     MongooseModule.forFeature([
       { name: EventSchemaInfo.name, schema: EventSchema },
     ]),
+    ScheduleModule.forRoot(),
   ],
   controllers: [EventController],
-  providers: [EventService, EventRepository],
+  providers: [EventService, EventRepository, EventStatusScheduler],
   exports: [EventRepository],
 })
 export class EventModule {}
