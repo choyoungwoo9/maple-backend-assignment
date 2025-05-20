@@ -21,16 +21,12 @@ services:
       AUTH_SERVER_ROOT_ADMIN_ID: ${AUTH_SERVER_ROOT_ADMIN_ID}
       AUTH_SERVER_ROOT_ADMIN_PW: ${AUTH_SERVER_ROOT_ADMIN_PW}
       AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
-    ports:
-      - 9000:3000
   auth-mongo:
     image: mongo:8.0.9
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${AUTH_MONGODB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${AUTH_MONGODB_PASSWORD}
-    ports:
-      - 27017:${AUTH_MONGODB_PORT}
     volumes:
       - auth-mongo-data:/data/db
   auth-mongo-express:
@@ -63,8 +59,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${EVENT_MONGODB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${EVENT_MONGODB_PASSWORD}
-    ports:
-      - 27018:${EVENT_MONGODB_PORT}
     volumes:
       - event-mongo-data:/data/db
   event-mongo-express:
