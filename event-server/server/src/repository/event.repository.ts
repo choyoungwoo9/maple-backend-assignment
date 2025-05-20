@@ -20,6 +20,7 @@ export class EventRepository {
       status: event.status,
       conditionList: event.conditionList,
       rewardList: event.rewardList,
+      creatorExposedId: event.creatorExposedId,
     };
     const createdEvent = new this.eventModel(documentData);
     const savedDocument = await createdEvent.save();
