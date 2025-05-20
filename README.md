@@ -34,6 +34,51 @@ docker compose up
     - [ ]  유저 보상 요청
     - [ ]  보상 요청 내역 확인
 
+
+# API 문서
+
+## 인증 API
+
+| 엔드포인트 | 메서드 | 설명 | 권한 | 요청 본문 | 응답 |
+|---------|------|------|------|---------|------|
+| `/auth/users/signup` | POST | 유저 회원가입 | 없음 | `{ "id": string, "password": string }` | 201 성공 / 409 ID 중복 |
+| `/auth/users/login` | POST | 로그인 | 없음 | `{ "id": string, "password": string }` | 200 `{ "accessToken": string }` / 401 인증 실패 |
+| `/auth/staff/register` | POST | 스태프 등록 | Admin | `{ "id": string, "password": string, "role": string }` | 201 성공 / 401 권한 없음 / 409 ID 중복 |
+
+## 이벤트 API
+
+| 엔드포인트 | 메서드 | 설명 | 권한 | 요청 본문 | 응답 |
+|---------|------|------|------|---------|------|
+| `/event` | POST | 이벤트 생성 | Admin, Operator | 이벤트 생성 정보 | 201 이벤트 정보 |
+| `/event/summary` | GET | 이벤트 목록 요약 조회 | 인증된 사용자 | 없음 | 200 이벤트 목록(id, description) |
+| `/event/:id` | GET | 특정 이벤트 상세 조회 | 인증된 사용자 | 없음 | 200 이벤트 정보 / 404 이벤트 없음 |
+
+
+이벤트 생성 요청 본문 예시:
+```json
+{
+  "event": {
+    "description": "7일 연속 로그인 시 골드 지급",
+    "conditions": [
+      {
+        "type": "CONSECUTIVE_LOGIN",
+        "params": { "days": 7 }
+      }
+    ],
+    "startAt": "2025-05-20T00:00:00.000Z",
+    "endAt": "2025-09-30T23:59:59.999Z"
+  },
+  "rewards": [
+    {
+      "description": "10000 골드",
+      "type": "GOLD",
+      "amount": 10000
+    }
+  ]
+}
+```
+
+
 # 주요 설계 고민
 
 ## 1. 계층 분리
