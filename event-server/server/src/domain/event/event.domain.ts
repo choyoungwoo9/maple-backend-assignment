@@ -1,6 +1,6 @@
 import { ConditionDomain } from '../condition/condition.domain';
 import { RewardDomain } from '../reward/reward.domain';
-
+import { v4 as uuidv4 } from 'uuid';
 export enum EventStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
@@ -8,6 +8,7 @@ export enum EventStatus {
 
 export class EventDomain {
   constructor(
+    public readonly id: string,
     public readonly description: string,
     public readonly startAt: Date,
     public readonly endAt: Date,
@@ -24,7 +25,9 @@ export class EventDomain {
     rewards: RewardDomain[];
   }) {
     this.validateParams(params);
+    const id = uuidv4();
     return new EventDomain(
+      id,
       params.description,
       params.startAt,
       params.endAt,
