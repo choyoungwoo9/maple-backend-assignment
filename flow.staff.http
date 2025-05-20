@@ -1,0 +1,64 @@
+### 관리자 플로우 ###
+
+### 1. 루트 관리자 로그인
+# @name adminLogin
+POST http://localhost:3000/auth/users/login
+Content-Type: application/json
+
+{
+  "id": "root123",
+  "password": "rootpassword123"
+}
+
+### 저장: 루트 관리자 토큰
+@admin_token = {{adminLogin.response.body.accessToken}}
+
+### 2. 관리자 등록 (새 Operator 생성)
+POST http://localhost:3000/auth/staff/register
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "id": "operator1",
+  "password": "operatorpassword",
+  "role": "OPERATOR"
+}
+
+### 3. 새 관리자(Operator) 로그인
+# @name operatorLogin
+POST http://localhost:3000/auth/users/login
+Content-Type: application/json
+
+{
+  "id": "operator1",
+  "password": "operatorpassword"
+}
+
+### 저장: Operator 토큰
+@operator_token = {{operatorLogin.response.body.accessToken}}
+
+### 4. 이벤트 등록
+POST http://localhost:3000/event
+Content-Type: application/json
+Authorization: Bearer {{operator_token}}
+
+{
+  "event": {
+    "description": "7일 연속 로그인 시 골드 지급",
+    "conditions": [
+      {
+        "type": "CONSECUTIVE_LOGIN",
+        "params": { "days": 7 }
+      }
+    ],
+    "startAt": "2025-05-20T00:00:00.000Z",
+    "endAt": "2025-09-30T23:59:59.999Z"
+  },
+  "rewards": [
+    {
+      "description": "10000 골드",
+      "type": "GOLD",
+      "amount": 10000
+    }
+  ]
+}

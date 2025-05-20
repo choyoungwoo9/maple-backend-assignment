@@ -1,0 +1,35 @@
+### 유저 플로우 ###
+
+### 1. 유저 회원가입
+POST http://localhost:3000/auth/users/signup
+Content-Type: application/json
+
+{
+  "id": "user1",
+  "password": "userpassword"
+}
+
+### 2. 유저 로그인
+# @name userLogin
+POST http://localhost:3000/auth/users/login
+Content-Type: application/json
+
+{
+  "id": "user1",
+  "password": "userpassword"
+}
+
+### 저장: 유저 토큰
+@user_token = {{userLogin.response.body.accessToken}}
+
+### 3. 이벤트 요약 목록 조회
+# @name eventSummary
+GET http://localhost:3000/event/summary
+Authorization: Bearer {{user_token}}
+
+### 저장: 첫 번째 이벤트 ID
+@event_id = {{eventSummary.response.body.$[0].id}}
+
+### 4. 이벤트 상세 조회
+GET http://localhost:3000/event/{{event_id}}
+Authorization: Bearer {{user_token}}
