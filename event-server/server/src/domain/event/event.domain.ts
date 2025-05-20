@@ -16,12 +16,12 @@ export class EventDomain {
     public readonly rewardList: RewardDomain[],
   ) {}
 
-  create(params: {
+  static create(params: {
     description: string;
     startAt: Date;
     endAt: Date;
-    conditionList: ConditionDomain[];
-    rewardList: RewardDomain[];
+    conditions: ConditionDomain[];
+    rewards: RewardDomain[];
   }) {
     this.validateParams(params);
     return new EventDomain(
@@ -29,17 +29,17 @@ export class EventDomain {
       params.startAt,
       params.endAt,
       EventStatus.INACTIVE,
-      params.conditionList,
-      params.rewardList,
+      params.conditions,
+      params.rewards,
     );
   }
 
-  private validateParams(params: {
+  static validateParams(params: {
     description: string;
     startAt: Date;
     endAt: Date;
-    conditionList: ConditionDomain[];
-    rewardList: RewardDomain[];
+    conditions: ConditionDomain[];
+    rewards: RewardDomain[];
   }) {
     //TODO: Custom Exception 구현
     if (params.endAt < new Date()) {
@@ -48,7 +48,7 @@ export class EventDomain {
     if (params.startAt > params.endAt) {
       throw new Error('startAt은 endAt보다 이전일 수 없습니다.');
     }
-    if (params.conditionList.length === 0) {
+    if (params.conditions.length === 0) {
       throw new Error('conditionList는 최소 하나 이상 포함되어야 합니다.');
     }
   }
