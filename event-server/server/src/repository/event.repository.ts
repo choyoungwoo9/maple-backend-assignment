@@ -49,6 +49,22 @@ export class EventRepository {
     await this.eventModel.updateOne({ id }, { status });
   }
 
+  async findAllSummary(): Promise<{ id: string; description: string }[]> {
+    const docs = await this.eventModel.find(
+      {},
+      { id: 1, description: 1, _id: 0 },
+    );
+    return docs.map((doc) => ({
+      id: doc.id,
+      description: doc.description,
+    }));
+  }
+
+  async findById(id: string): Promise<EventDomain | null> {
+    const doc = await this.eventModel.findOne({ id });
+    return doc ? this.eventDocumentToDomain(doc) : null;
+  }
+
   private eventDocumentToDomain(document: EventDocument): EventDomain {
     return new EventDomain(
       document.id,

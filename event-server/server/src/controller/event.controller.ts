@@ -4,11 +4,13 @@ import {
   Headers,
   Post,
   UnauthorizedException,
+  Get,
+  Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { EventService } from '../service/event.service';
 import { CreateEventRequestDto } from './dto/create-event.request.dto';
 import { AuthService } from 'src/service/auth/auth.service';
-import { Role } from 'src/service/auth/role.enum';
 
 @Controller('/event')
 export class EventController {
@@ -25,6 +27,20 @@ export class EventController {
     const token = this.parseToken(authHeader);
     const authPayload = await this.authService.verifyToken(token);
     return this.eventService.createEvent(dto, authPayload);
+  }
+
+  @Get('summary')
+  async getEventListSummary() {
+    return this.eventService.getEventListSummary();
+  }
+
+  @Get(':id')
+  async getEvent(@Param('id') id: string) {
+    const event = await this.eventService.getEventById(id);
+    if (!event) {
+      throw new NotFoundException('이벤트를 찾을 수 없습니다.');
+    }
+    return event;
   }
 
   private parseToken(authHeader: string): string {
