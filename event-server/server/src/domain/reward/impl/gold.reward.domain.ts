@@ -1,13 +1,12 @@
 import { RewardDomain } from '../reward.domain';
 import { RewardType } from '../reward.type';
 
-export class GoldRewardDomain extends RewardDomain {
+export class GoldRewardDomain implements RewardDomain {
   type = RewardType.GOLD;
   amount: number;
   description: string;
   id?: string;
   constructor(amount: number, description: string, id: string) {
-    super();
     this.validateParams(amount, description, id);
     this.amount = amount;
     this.description = description;

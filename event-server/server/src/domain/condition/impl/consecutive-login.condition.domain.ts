@@ -1,12 +1,11 @@
 import { ConditionDomain } from '../condition.domain';
 import { ConditionType } from '../condition.type';
 
-export class ConsecutiveLoginConditionDomain extends ConditionDomain {
+export class ConsecutiveLoginConditionDomain implements ConditionDomain {
   type = ConditionType.CONSECUTIVE_LOGIN;
   params: { days: number };
 
   constructor(params: { days: number }) {
-    super();
     this.validateParams(params);
     this.params = params;
   }
