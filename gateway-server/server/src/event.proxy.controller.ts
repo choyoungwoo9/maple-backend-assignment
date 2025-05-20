@@ -2,6 +2,7 @@ import {
   All,
   Controller,
   InternalServerErrorException,
+  Post,
   Req,
   Res,
   UseGuards,
@@ -18,10 +19,23 @@ import { Roles } from './guard/roles.decorator';
 export class EventProxyController {
   constructor(private readonly proxyService: ProxyService) {}
 
+  @Post()
   @UseGuards(RolesGuard)
   @Roles(Role.Admin, Role.Operator)
-  @All()
-  async proxyEvent(@Req() req: Request, @Res() res: Response): Promise<void> {
+  async createEvent(@Req() req: Request, @Res() res: Response): Promise<void> {
+    try {
+      await this.proxyService.proxy(req, res, process.env.EVENT_SERVER_URL);
+    } catch (e) {
+      console.error('이벤트 프록시 통신 오류:', e?.message);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @All('*')
+  async proxyOtherRequests(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
     try {
       await this.proxyService.proxy(req, res, process.env.EVENT_SERVER_URL);
     } catch (e) {
