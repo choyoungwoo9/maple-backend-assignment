@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       AUTH_SERVER_URL: http://auth-server:${AUTH_SERVER_PORT}
+      EVENT_SERVER_URL: http://event-server:${EVENT_SERVER_PORT}
       GATEWAY_SERVER_PORT: ${GATEWAY_SERVER_PORT}
       AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
     ports:
@@ -20,6 +21,8 @@ services:
       AUTH_SERVER_ROOT_ADMIN_ID: ${AUTH_SERVER_ROOT_ADMIN_ID}
       AUTH_SERVER_ROOT_ADMIN_PW: ${AUTH_SERVER_ROOT_ADMIN_PW}
       AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
+    ports:
+      - 9000:3000
   auth-mongo:
     image: mongo:8.0.9
     restart: always
@@ -42,6 +45,18 @@ services:
       ME_CONFIG_BASICAUTH: false
     depends_on:
       - auth-mongo
+  event-server:
+    build:
+      context: ./event-server/server
+      dockerfile: Dockerfile
+    environment:
+      EVENT_MONGODB_USER: ${EVENT_MONGODB_USER}
+      EVENT_MONGODB_PASSWORD: ${EVENT_MONGODB_PASSWORD}
+      EVENT_MONGODB_PORT: ${EVENT_MONGODB_PORT}
+      EVENT_MONGODB_DB_NAME: ${EVENT_MONGODB_DB_NAME}
+      EVENT_SERVER_PORT: ${EVENT_SERVER_PORT}
+      EVENT_MONGODB_URI: mongodb://${EVENT_MONGODB_USER}:${EVENT_MONGODB_PASSWORD}@event-mongo:${EVENT_MONGODB_PORT}
+      AUTH_SERVER_JWT_SECRET: ${AUTH_SERVER_JWT_SECRET}
   event-mongo:
     image: mongo:8.0.9
     restart: always
